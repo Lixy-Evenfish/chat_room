@@ -206,7 +206,7 @@ func (h *HTTPHandler) GetHistory(c *gin.Context) {
 
 	messages, err := h.chatService.GetChatHistory(c.Request.Context(), roomID, page, limit)
 	if err != nil {
-		utils.ErrorResponse(c, http.StatusNotFound, "获取历史失败", err)
+		utils.ErrorResponse(c, http.StatusInternalServerError, "获取历史失败", err)
 		return
 	}
 

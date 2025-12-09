@@ -171,9 +171,6 @@ func (r *messageRepository) GetMessages(ctx context.Context, query *models.Messa
 	err := db.Order(orderBy).
 		Offset(offset).
 		Limit(query.PageSize).
-		Preload("Sender", func(db *gorm.DB) *gorm.DB {
-			return db.Select("id, username, avatar, status")
-		}).
 		Find(&messages).Error
 
 	if err != nil {
