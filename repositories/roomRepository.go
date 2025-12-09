@@ -59,25 +59,6 @@ func NewRoomRepository(db *gorm.DB) RoomRepository {
 }
 
 func (r *roomRepository) Create(ctx context.Context, room *models.ChatRoom) error {
-	// 生成房间ID
-	if room.ID == "" {
-		room.ID = uuid.New().String()
-	}
-
-	// 设置创建时间
-	now := time.Now()
-	if room.CreatedAt.IsZero() {
-		room.CreatedAt = now
-	}
-	room.UpdatedAt = now
-
-	// 设置默认值
-	if room.Type == "" {
-		room.Type = "group"
-	}
-	if room.MaxMembers == 0 {
-		room.MaxMembers = 200
-	}
 
 	// 使用事务确保数据一致性
 	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
@@ -93,7 +74,7 @@ func (r *roomRepository) Create(ctx context.Context, room *models.ChatRoom) erro
 				RoomID:   room.ID,
 				UserID:   room.CreatorID,
 				Role:     "owner",
-				JoinedAt: now,
+				JoinedAt: time.Now(),
 			}
 
 			if err := tx.Create(member).Error; err != nil {

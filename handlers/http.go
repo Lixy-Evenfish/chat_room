@@ -443,6 +443,30 @@ func (h *HTTPHandler) CreateRoom(c *gin.Context) {
 		UpdatedAt:   time.Now(),
 	}
 
+	// 生成房间ID
+	if room.ID == "" {
+		room.ID = uuid.New().String()
+	}
+
+	// 设置创建时间
+	now := time.Now()
+	if room.CreatedAt.IsZero() {
+		room.CreatedAt = now
+	}
+	room.UpdatedAt = now
+
+	// 设置默认值
+	if room.Type == "" {
+		room.Type = "group"
+	}
+	if room.MaxMembers == 0 {
+		room.MaxMembers = 200
+	}
+	// 生成邀请码以避免唯一索引冲突
+	if room.InviteCode == "" {
+		room.InviteCode = uuid.New().String()[:8]
+	}
+
 	// 添加成员
 	if len(req.MemberIDs) > 0 {
 		for _, memberID := range req.MemberIDs {
