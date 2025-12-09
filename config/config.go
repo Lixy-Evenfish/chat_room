@@ -1,8 +1,11 @@
 package config
 
 import (
+	"log"
 	"os"
 	"strconv"
+
+	"github.com/joho/godotenv" //终端输入  go get github.com/joho/godotenv   加载第三方库
 )
 
 var Conf struct {
@@ -20,6 +23,11 @@ var Conf struct {
 }
 
 func LoadConfig() {
+	// 尝试加载 .env 文件
+	if err := godotenv.Load(); err != nil {
+		log.Println("No .env file found, using environment variables or defaults")
+	}
+
 	Conf.JWTSecret = getEnv("JWT_SECRET", "your-secret-key")
 	Conf.JWTExpireHour = getEnvInt("JWT_EXPIRE_HOUR", 24)
 	Conf.ServerPort = getEnv("SERVER_PORT", ":8084")
@@ -36,8 +44,10 @@ func LoadConfig() {
 // getEnv 获取环境变量，如果不存在则返回默认值
 func getEnv(key, defaultValue string) string {
 	if value := os.Getenv(key); value != "" {
+		log.Println("Using environment variable:", key, "=", value)
 		return value
 	}
+	log.Println("Failed to get environment variable:", key, "=", defaultValue)
 	return defaultValue
 }
 
