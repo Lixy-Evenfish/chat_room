@@ -67,21 +67,6 @@ func (r *roomRepository) Create(ctx context.Context, room *models.ChatRoom) erro
 			return fmt.Errorf("创建房间失败: %w", err)
 		}
 
-		// 如果房间有创建者，将其添加为成员（owner角色）
-		if room.CreatorID != "" {
-			member := &models.RoomMember{
-				ID:       uuid.New().String(),
-				RoomID:   room.ID,
-				UserID:   room.CreatorID,
-				Role:     "owner",
-				JoinedAt: time.Now(),
-			}
-
-			if err := tx.Create(member).Error; err != nil {
-				return fmt.Errorf("添加创建者到房间失败: %w", err)
-			}
-		}
-
 		return nil
 	})
 }
