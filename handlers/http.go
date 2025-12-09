@@ -48,24 +48,26 @@ func NewHTTPHandler(userService services.UserService, chatService services.ChatS
 // Creates a new user account and returns a JWT token for authentication.
 //
 // Request:
-//   POST /api/v1/register
-//   Content-Type: application/json
-//   {
-//     "username": "example_user",
-//     "password": "secure_password",
-//     "email": "user@example.com"
-//   }
+//
+//	POST /api/v1/register
+//	Content-Type: application/json
+//	{
+//	  "username": "example_user",
+//	  "password": "secure_password",
+//	  "email": "user@example.com"
+//	}
 //
 // Response:
-//   {
-//     "code": 200,
-//     "message": "success",
-//     "data": {
-//       "user_id": "user_uuid",
-//       "username": "example_user",
-//       "token": "jwt_token"
-//     }
-//   }
+//
+//	{
+//	  "code": 200,
+//	  "message": "success",
+//	  "data": {
+//	    "user_id": "user_uuid",
+//	    "username": "example_user",
+//	    "token": "jwt_token"
+//	  }
+//	}
 func (h *HTTPHandler) Register(c *gin.Context) {
 	var req struct {
 		Username string `json:"username" binding:"required,min=3,max=20"`
@@ -97,25 +99,27 @@ func (h *HTTPHandler) Register(c *gin.Context) {
 // Validates credentials and returns a JWT token for authenticated sessions.
 //
 // Request:
-//   POST /api/v1/login
-//   Content-Type: application/json
-//   {
-//     "username": "example_user",
-//     "password": "secure_password",
-//     "ip": "optional_client_ip",
-//     "user_agent": "optional_user_agent"
-//   }
+//
+//	POST /api/v1/login
+//	Content-Type: application/json
+//	{
+//	  "username": "example_user",
+//	  "password": "secure_password",
+//	  "ip": "optional_client_ip",
+//	  "user_agent": "optional_user_agent"
+//	}
 //
 // Response:
-//   {
-//     "code": 200,
-//     "message": "success",
-//     "data": {
-//       "user_id": "user_uuid",
-//       "username": "example_user",
-//       "token": "jwt_token"
-//     }
-//   }
+//
+//	{
+//	  "code": 200,
+//	  "message": "success",
+//	  "data": {
+//	    "user_id": "user_uuid",
+//	    "username": "example_user",
+//	    "token": "jwt_token"
+//	  }
+//	}
 func (h *HTTPHandler) Login(c *gin.Context) {
 	var req struct {
 		Username  string `json:"username" binding:"required"`
@@ -147,21 +151,23 @@ func (h *HTTPHandler) Login(c *gin.Context) {
 // Returns information about all currently connected users.
 //
 // Request:
-//   GET /api/v1/users
+//
+//	GET /api/v1/users
 //
 // Response:
-//   {
-//     "code": 200,
-//     "message": "success",
-//     "data": [
-//       {
-//         "user_id": "user_uuid",
-//         "username": "example_user",
-//         "is_online": true,
-//         "last_seen": "2023-01-01T00:00:00Z"
-//       }
-//     ]
-//   }
+//
+//	{
+//	  "code": 200,
+//	  "message": "success",
+//	  "data": [
+//	    {
+//	      "user_id": "user_uuid",
+//	      "username": "example_user",
+//	      "is_online": true,
+//	      "last_seen": "2023-01-01T00:00:00Z"
+//	    }
+//	  ]
+//	}
 func (h *HTTPHandler) GetUsers(c *gin.Context) {
 	users, err := h.userService.GetOnlineUsers(c.Request.Context())
 	if err != nil {
@@ -176,21 +182,23 @@ func (h *HTTPHandler) GetUsers(c *gin.Context) {
 // Fetches paginated message history from the database.
 //
 // Request:
-//   GET /api/v1/rooms/{room_id}/messages?page=1&limit=50
+//
+//	GET /api/v1/rooms/{room_id}/messages?page=1&limit=50
 //
 // Response:
-//   {
-//     "code": 200,
-//     "message": "success",
-//     "data": [
-//       {
-//         "id": "message_uuid",
-//         "sender_id": "user_uuid",
-//         "content": "Hello world!",
-//         "created_at": "2023-01-01T00:00:00Z"
-//       }
-//     ]
-//   }
+//
+//	{
+//	  "code": 200,
+//	  "message": "success",
+//	  "data": [
+//	    {
+//	      "id": "message_uuid",
+//	      "sender_id": "user_uuid",
+//	      "content": "Hello world!",
+//	      "created_at": "2023-01-01T00:00:00Z"
+//	    }
+//	  ]
+//	}
 func (h *HTTPHandler) GetHistory(c *gin.Context) {
 	roomID := c.Param("room_id")
 	page := c.DefaultQuery("page", "1")
@@ -210,21 +218,23 @@ func (h *HTTPHandler) GetHistory(c *gin.Context) {
 // Searches through message content in a given room.
 //
 // Request:
-//   GET /api/v1/rooms/{room_id}/messages/search?keyword=hello&limit=50
+//
+//	GET /api/v1/rooms/{room_id}/messages/search?keyword=hello&limit=50
 //
 // Response:
-//   {
-//     "code": 200,
-//     "message": "success",
-//     "data": [
-//       {
-//         "id": "message_uuid",
-//         "sender_id": "user_uuid",
-//         "content": "Hello world!",
-//         "created_at": "2023-01-01T00:00:00Z"
-//       }
-//     ]
-//   }
+//
+//	{
+//	  "code": 200,
+//	  "message": "success",
+//	  "data": [
+//	    {
+//	      "id": "message_uuid",
+//	      "sender_id": "user_uuid",
+//	      "content": "Hello world!",
+//	      "created_at": "2023-01-01T00:00:00Z"
+//	    }
+//	  ]
+//	}
 func (h *HTTPHandler) SearchMessages(c *gin.Context) {
 	roomID := c.Param("room_id")
 	keyword := c.Query("keyword")
@@ -249,17 +259,19 @@ func (h *HTTPHandler) SearchMessages(c *gin.Context) {
 // Calculates how many messages the user hasn't read yet in a specific room.
 //
 // Request:
-//   GET /api/v1/rooms/{room_id}/unread
+//
+//	GET /api/v1/rooms/{room_id}/unread
 //
 // Response:
-//   {
-//     "code": 200,
-//     "message": "success",
-//     "data": {
-//       "room_id": "room_uuid",
-//       "unread_count": 5
-//     }
-//   }
+//
+//	{
+//	  "code": 200,
+//	  "message": "success",
+//	  "data": {
+//	    "room_id": "room_uuid",
+//	    "unread_count": 5
+//	  }
+//	}
 func (h *HTTPHandler) GetUnreadCount(c *gin.Context) {
 	roomID := c.Param("room_id")
 	userID, exists := c.Get("user_id")
@@ -285,18 +297,20 @@ func (h *HTTPHandler) GetUnreadCount(c *gin.Context) {
 // Updates message status to indicate they've been read by the user.
 //
 // Request:
-//   POST /api/v1/rooms/{room_id}/read
-//   Content-Type: application/json
-//   {
-//     "message_ids": ["msg_uuid1", "msg_uuid2"]
-//   }
+//
+//	POST /api/v1/rooms/{room_id}/read
+//	Content-Type: application/json
+//	{
+//	  "message_ids": ["msg_uuid1", "msg_uuid2"]
+//	}
 //
 // Response:
-//   {
-//     "code": 200,
-//     "message": "success",
-//     "data": null
-//   }
+//
+//	{
+//	  "code": 200,
+//	  "message": "success",
+//	  "data": null
+//	}
 func (h *HTTPHandler) MarkAsRead(c *gin.Context) {
 	roomID := c.Param("room_id")
 	userID, exists := c.Get("user_id")
@@ -327,18 +341,20 @@ func (h *HTTPHandler) MarkAsRead(c *gin.Context) {
 // Removes a message from public view, though it may still exist in logs.
 //
 // Request:
-//   DELETE /api/v1/messages/{message_id}
-//   Content-Type: application/json
-//   {
-//     "reason": "optional_reason_for_recall"
-//   }
+//
+//	DELETE /api/v1/messages/{message_id}
+//	Content-Type: application/json
+//	{
+//	  "reason": "optional_reason_for_recall"
+//	}
 //
 // Response:
-//   {
-//     "code": 200,
-//     "message": "success",
-//     "data": null
-//   }
+//
+//	{
+//	  "code": 200,
+//	  "message": "success",
+//	  "data": null
+//	}
 func (h *HTTPHandler) RecallMessage(c *gin.Context) {
 	messageID := c.Param("message_id")
 	userID, exists := c.Get("user_id")
@@ -369,30 +385,32 @@ func (h *HTTPHandler) RecallMessage(c *gin.Context) {
 // Supports creation of private, group, or channel rooms with customizable settings.
 //
 // Request:
-//   POST /api/v1/rooms
-//   Content-Type: application/json
-//   {
-//     "name": "Room Name",
-//     "description": "Optional description",
-//     "type": "private|group|channel",
-//     "is_public": true,
-//     "member_ids": ["user_uuid1", "user_uuid2"]
-//   }
+//
+//	POST /api/v1/rooms
+//	Content-Type: application/json
+//	{
+//	  "name": "Room Name",
+//	  "description": "Optional description",
+//	  "type": "private|group|channel",
+//	  "is_public": true,
+//	  "member_ids": ["user_uuid1", "user_uuid2"]
+//	}
 //
 // Response:
-//   {
-//     "code": 200,
-//     "message": "success",
-//     "data": {
-//       "id": "room_uuid",
-//       "name": "Room Name",
-//       "description": "Optional description",
-//       "type": "private|group|channel",
-//       "creator_id": "user_uuid",
-//       "is_public": true,
-//       "members": [...]
-//     }
-//   }
+//
+//	{
+//	  "code": 200,
+//	  "message": "success",
+//	  "data": {
+//	    "id": "room_uuid",
+//	    "name": "Room Name",
+//	    "description": "Optional description",
+//	    "type": "private|group|channel",
+//	    "creator_id": "user_uuid",
+//	    "is_public": true,
+//	    "members": [...]
+//	  }
+//	}
 func (h *HTTPHandler) CreateRoom(c *gin.Context) {
 	userID, exists := c.Get("user_id")
 	if !exists {
@@ -428,6 +446,9 @@ func (h *HTTPHandler) CreateRoom(c *gin.Context) {
 	// 添加成员
 	if len(req.MemberIDs) > 0 {
 		for _, memberID := range req.MemberIDs {
+			if memberID == userID.(string) {
+				continue
+			}
 			member := &models.RoomMember{
 				ID:       uuid.New().String(),
 				RoomID:   room.ID,
@@ -462,16 +483,18 @@ func (h *HTTPHandler) CreateRoom(c *gin.Context) {
 // Adds the authenticated user to the specified room as a member.
 //
 // Request:
-//   POST /api/v1/rooms/{room_id}/join
+//
+//	POST /api/v1/rooms/{room_id}/join
 //
 // Response:
-//   {
-//     "code": 200,
-//     "message": "success",
-//     "data": {
-//       "message": "成功加入房间"
-//     }
-//   }
+//
+//	{
+//	  "code": 200,
+//	  "message": "success",
+//	  "data": {
+//	    "message": "成功加入房间"
+//	  }
+//	}
 func (h *HTTPHandler) JoinRoom(c *gin.Context) {
 	userID, exists := c.Get("user_id")
 	if !exists {
@@ -498,16 +521,18 @@ func (h *HTTPHandler) JoinRoom(c *gin.Context) {
 // Removes the authenticated user from the specified room.
 //
 // Request:
-//   POST /api/v1/rooms/{room_id}/leave
+//
+//	POST /api/v1/rooms/{room_id}/leave
 //
 // Response:
-//   {
-//     "code": 200,
-//     "message": "success",
-//     "data": {
-//       "message": "成功离开房间"
-//     }
-//   }
+//
+//	{
+//	  "code": 200,
+//	  "message": "success",
+//	  "data": {
+//	    "message": "成功离开房间"
+//	  }
+//	}
 func (h *HTTPHandler) LeaveRoom(c *gin.Context) {
 	userID, exists := c.Get("user_id")
 	if !exists {
@@ -534,22 +559,24 @@ func (h *HTTPHandler) LeaveRoom(c *gin.Context) {
 // Returns information about all users who are members of the specified room.
 //
 // Request:
-//   GET /api/v1/rooms/{room_id}/members
+//
+//	GET /api/v1/rooms/{room_id}/members
 //
 // Response:
-//   {
-//     "code": 200,
-//     "message": "success",
-//     "data": [
-//       {
-//         "id": "membership_uuid",
-//         "room_id": "room_uuid",
-//         "user_id": "user_uuid",
-//         "role": "owner|admin|member",
-//         "joined_at": "2023-01-01T00:00:00Z"
-//       }
-//     ]
-//   }
+//
+//	{
+//	  "code": 200,
+//	  "message": "success",
+//	  "data": [
+//	    {
+//	      "id": "membership_uuid",
+//	      "room_id": "room_uuid",
+//	      "user_id": "user_uuid",
+//	      "role": "owner|admin|member",
+//	      "joined_at": "2023-01-01T00:00:00Z"
+//	    }
+//	  ]
+//	}
 func (h *HTTPHandler) GetRoomMembers(c *gin.Context) {
 	roomID := c.Param("room_id")
 	if roomID == "" {
